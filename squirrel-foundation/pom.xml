@@ -9,7 +9,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.mobius-software.fsm</groupId>
     <artifactId>squirrel-foundation</artifactId>
-    <version>0.4.0-1</version>
+    <version>0.4.0-2-SNAPSHOT</version>
     <packaging>bundle</packaging>
     <name>squirrel foundation</name>
     <description>foundation module of squirrel framework which provided event driven infrastructure and a finite state machine implementation.</description>
@@ -45,7 +45,7 @@
         <connection>scm:git:git://github.com/mobius-software-ltd/squirrel.git</connection>
         <developerConnection>scm:git:git@github.com:mobius-software-ltd/squirrel.git</developerConnection>
         <url>https://github.com/mobius-software-ltd/squirrel</url>
-      <tag>squirrel-foundation-0.4.0-1</tag>
+      <tag>HEAD</tag>
   </scm>
 
     <licenses>
