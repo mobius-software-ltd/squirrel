@@ -1,12 +1,27 @@
 package org.squirrelframework.foundation.fsm.impl;
 
-import com.google.common.base.Preconditions;
-import com.google.common.base.Predicate;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
+import static com.google.common.base.Preconditions.checkState;
+
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.lang.reflect.Proxy;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
+import java.util.Stack;
+import java.util.concurrent.LinkedBlockingDeque;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
+
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.squirrelframework.foundation.component.Observable;
 import org.squirrelframework.foundation.component.SquirrelProvider;
 import org.squirrelframework.foundation.component.impl.AbstractSubject;
@@ -14,22 +29,50 @@ import org.squirrelframework.foundation.event.AsyncEventListener;
 import org.squirrelframework.foundation.event.ListenerMethod;
 import org.squirrelframework.foundation.exception.ErrorCodes;
 import org.squirrelframework.foundation.exception.TransitionException;
-import org.squirrelframework.foundation.fsm.*;
-import org.squirrelframework.foundation.fsm.ActionExecutionService.*;
-import org.squirrelframework.foundation.fsm.annotation.*;
+import org.squirrelframework.foundation.fsm.Action;
+import org.squirrelframework.foundation.fsm.ActionExecutionService;
+import org.squirrelframework.foundation.fsm.ActionExecutionService.ActionEvent;
+import org.squirrelframework.foundation.fsm.ActionExecutionService.AfterExecActionEvent;
+import org.squirrelframework.foundation.fsm.ActionExecutionService.AfterExecActionListener;
+import org.squirrelframework.foundation.fsm.ActionExecutionService.BeforeExecActionEvent;
+import org.squirrelframework.foundation.fsm.ActionExecutionService.BeforeExecActionListener;
+import org.squirrelframework.foundation.fsm.ActionExecutionService.ExecActionExceptionEvent;
+import org.squirrelframework.foundation.fsm.ActionExecutionService.ExecActionExceptionListener;
+import org.squirrelframework.foundation.fsm.Converter;
+import org.squirrelframework.foundation.fsm.ConverterProvider;
+import org.squirrelframework.foundation.fsm.ImmutableLinkedState;
+import org.squirrelframework.foundation.fsm.ImmutableState;
+import org.squirrelframework.foundation.fsm.MvelScriptManager;
+import org.squirrelframework.foundation.fsm.SCXMLVisitor;
+import org.squirrelframework.foundation.fsm.StateContext;
+import org.squirrelframework.foundation.fsm.StateMachine;
+import org.squirrelframework.foundation.fsm.StateMachineConfiguration;
+import org.squirrelframework.foundation.fsm.StateMachineContext;
+import org.squirrelframework.foundation.fsm.StateMachineData;
+import org.squirrelframework.foundation.fsm.StateMachineLogger;
+import org.squirrelframework.foundation.fsm.StateMachineStatus;
+import org.squirrelframework.foundation.fsm.TransitionResult;
+import org.squirrelframework.foundation.fsm.Visitor;
+import org.squirrelframework.foundation.fsm.annotation.AsyncExecute;
+import org.squirrelframework.foundation.fsm.annotation.ListenerOrder;
+import org.squirrelframework.foundation.fsm.annotation.OnActionExecException;
+import org.squirrelframework.foundation.fsm.annotation.OnAfterActionExecuted;
+import org.squirrelframework.foundation.fsm.annotation.OnBeforeActionExecuted;
+import org.squirrelframework.foundation.fsm.annotation.OnStateMachineStart;
+import org.squirrelframework.foundation.fsm.annotation.OnStateMachineTerminate;
+import org.squirrelframework.foundation.fsm.annotation.OnTransitionBegin;
+import org.squirrelframework.foundation.fsm.annotation.OnTransitionComplete;
+import org.squirrelframework.foundation.fsm.annotation.OnTransitionDecline;
+import org.squirrelframework.foundation.fsm.annotation.OnTransitionEnd;
+import org.squirrelframework.foundation.fsm.annotation.OnTransitionException;
 import org.squirrelframework.foundation.util.Pair;
 import org.squirrelframework.foundation.util.ReflectUtils;
 import org.squirrelframework.foundation.util.TypeReference;
 
-import java.lang.annotation.Annotation;
-import java.lang.reflect.*;
-import java.util.*;
-import java.util.concurrent.LinkedBlockingDeque;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
-
-import static com.google.common.base.Preconditions.checkState;
+import com.google.common.base.Preconditions;
+import com.google.common.base.Predicate;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 
 /**
  * The Abstract state machine provide several extension ability to cover different extension granularity. 
@@ -53,7 +96,7 @@ import static com.google.common.base.Preconditions.checkState;
  */
 public abstract class AbstractStateMachine<T extends StateMachine<T, S, E, C>, S, E, C> extends AbstractSubject implements StateMachine<T, S, E, C> {
     
-    private static final Logger logger = LoggerFactory.getLogger(AbstractStateMachine.class);
+    private static final Logger logger = LogManager.getLogger(AbstractStateMachine.class);
     
     private final ActionExecutionService<T, S, E, C> executor = SquirrelProvider.getInstance().newInstance(
             new TypeReference<ActionExecutionService<T, S, E, C>>(){});
@@ -998,7 +1041,7 @@ public abstract class AbstractStateMachine<T extends StateMachine<T, S, E, C>, S
         Annotation anno = listenerMethod.getAnnotation(annotationClass);
         if(anno!=null) {
             Method whenMethod = ReflectUtils.getMethod(anno.getClass(), "when", new Class[0]);
-            String whenCondition = StringUtils.EMPTY;
+            String whenCondition = "";
             if(whenMethod!=null) {
                 whenCondition = (String)ReflectUtils.invoke(whenMethod, anno);
             }

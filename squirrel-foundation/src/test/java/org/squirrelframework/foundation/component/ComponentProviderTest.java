@@ -1,12 +1,13 @@
 package org.squirrelframework.foundation.component;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
 import org.junit.After;
 import org.junit.Test;
 import org.squirrelframework.foundation.component.impl.ProgrammerImpl;
 import org.squirrelframework.foundation.component.impl.StudentImpl;
-
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
 
 public class ComponentProviderTest {
 
@@ -18,23 +19,23 @@ public class ComponentProviderTest {
     @Test
     public void testNewInstance() {
         Person p = SquirrelProvider.getInstance().newInstance(PersonImpl.class);
-        assertThat(p, notNullValue());
-        assertThat(p, instanceOf(PersonImpl.class));
+        assertNotNull(p);
+        assertTrue(p instanceof PersonImpl);
     }
     
     @Test
     public void testNewInstanceWithArg() {
         Person p = SquirrelProvider.getInstance().newInstance(PersonImpl.class, new Class[]{String.class}, new Object[]{"Henry"});
-        assertThat(p, notNullValue());
-        assertThat(p, instanceOf(PersonImpl.class));
-        assertThat(p.getName(), equalTo("Henry"));
+        assertNotNull(p);
+        assertTrue(p instanceof PersonImpl);
+        assertEquals(p.getName(), "Henry");
     }
     
     @Test
     public void testNewInterface() {
         Person p = SquirrelProvider.getInstance().newInstance(Person.class);
-        assertThat(p, notNullValue());
-        assertThat(p, instanceOf(PersonImpl.class));
+        assertNotNull(p);
+        assertTrue(p instanceof PersonImpl);
     }
     
     @Test
@@ -42,12 +43,12 @@ public class ComponentProviderTest {
         SquirrelProvider.getInstance().register(PersonImpl.class, StudentImpl.class);
         
         Person p = SquirrelProvider.getInstance().newInstance(Person.class);
-        assertThat(p, notNullValue());
-        assertThat(p, instanceOf(PersonImpl.class));
+        assertNotNull(p);
+        assertTrue(p instanceof PersonImpl);
         
         Person p2 = SquirrelProvider.getInstance().newInstance(PersonImpl.class);
-        assertThat(p2, notNullValue());
-        assertThat(p2, instanceOf(StudentImpl.class));
+        assertNotNull(p2);
+        assertTrue(p instanceof StudentImpl);
         
         SquirrelProvider.getInstance().unregister(PersonImpl.class);
     }
@@ -55,24 +56,24 @@ public class ComponentProviderTest {
     @Test
     public void testNewInterfaceWithArg() {
         Person p = SquirrelProvider.getInstance().newInstance(Person.class, new Class[]{String.class}, new Object[]{"Henry"});
-        assertThat(p, notNullValue());
-        assertThat(p, instanceOf(PersonImpl.class));
-        assertThat(p.getName(), equalTo("Henry"));
+        assertNotNull(p);
+        assertTrue(p instanceof PersonImpl);
+        assertEquals(p.getName(), "Henry");
     }
     
     @Test
     public void testNewInterfaceWithImpl() {
         Student p = SquirrelProvider.getInstance().newInstance(Student.class);
-        assertThat(p, notNullValue());
-        assertThat(p, instanceOf(StudentImpl.class));
+        assertNotNull(p);
+        assertTrue(p instanceof StudentImpl);
     }
     
     @Test
     public void testRegisterAnotherImpl() {
         SquirrelProvider.getInstance().register(Person.class, StudentImpl.class);
         Person p = SquirrelProvider.getInstance().newInstance(Person.class);
-        assertThat(p, notNullValue());
-        assertThat(p, instanceOf(StudentImpl.class));
+        assertNotNull(p);
+        assertTrue(p instanceof StudentImpl);
         SquirrelProvider.getInstance().unregister(Person.class);
     }
     
@@ -80,8 +81,8 @@ public class ComponentProviderTest {
     public void testRegisterAnotherInterface() {
         SquirrelProvider.getInstance().register(Person.class, Student.class);
         Person p = SquirrelProvider.getInstance().newInstance(Person.class);
-        assertThat(p, notNullValue());
-        assertThat(p, instanceOf(StudentImpl.class));
+        assertNotNull(p);
+        assertTrue(p instanceof StudentImpl);
         SquirrelProvider.getInstance().unregister(Person.class);
     }
 
@@ -89,26 +90,26 @@ public class ComponentProviderTest {
     public void testImplUnregistrationRevertsToUsingDefaultImpl() {
         SquirrelProvider.getInstance().register(Person.class, StudentImpl.class);
         Person p = SquirrelProvider.getInstance().newInstance(Person.class);
-        assertThat(p, notNullValue());
-        assertThat(p, instanceOf(StudentImpl.class));
+        assertNotNull(p);
+        assertTrue(p instanceof StudentImpl);
 
         SquirrelProvider.getInstance().unregister(Person.class);
         p = SquirrelProvider.getInstance().newInstance(Person.class);
-        assertThat(p, notNullValue());
-        assertThat(p, instanceOf(PersonImpl.class));
+        assertNotNull(p);
+        assertTrue(p instanceof PersonImpl);
     }
 
     @Test
     public void testInterfaceUnregistrationRevertsToUsingDefaultImpl() {
         SquirrelProvider.getInstance().register(Person.class, Student.class);
         Person p = SquirrelProvider.getInstance().newInstance(Person.class);
-        assertThat(p, notNullValue());
-        assertThat(p, instanceOf(StudentImpl.class));
+        assertNotNull(p);
+        assertTrue(p instanceof StudentImpl);
 
         SquirrelProvider.getInstance().unregister(Person.class);
         p = SquirrelProvider.getInstance().newInstance(Person.class);
-        assertThat(p, notNullValue());
-        assertThat(p, instanceOf(PersonImpl.class));
+        assertNotNull(p);
+        assertTrue(p instanceof PersonImpl);
     }
 
     /**
@@ -121,8 +122,8 @@ public class ComponentProviderTest {
         SquirrelProvider.getInstance().register(Person.class, Student.class);
         SquirrelProvider.getInstance().register(Student.class, Programmer.class);
         Person p = SquirrelProvider.getInstance().newInstance(Person.class);
-        assertThat(p, notNullValue());
-        assertThat(p, instanceOf(ProgrammerImpl.class));
+        assertNotNull(p);
+        assertTrue(p instanceof ProgrammerImpl);
         SquirrelProvider.getInstance().unregister(Person.class);
     }
 

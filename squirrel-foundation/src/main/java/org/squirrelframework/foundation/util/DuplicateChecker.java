@@ -1,16 +1,16 @@
 package org.squirrelframework.foundation.util;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.net.URL;
 import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 public class DuplicateChecker {
 
-    private static final Logger logger = LoggerFactory.getLogger(DuplicateChecker.class);
+    private static final Logger logger = LogManager.getLogger(DuplicateChecker.class);
 
     private DuplicateChecker() {}
 

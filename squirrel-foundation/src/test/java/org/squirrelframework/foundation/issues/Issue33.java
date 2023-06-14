@@ -1,17 +1,25 @@
 package org.squirrelframework.foundation.issues;
 
-import org.junit.*;
+import static org.junit.Assert.assertEquals;
+
+import org.junit.After;
+import org.junit.AfterClass;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
 import org.squirrelframework.foundation.component.SquirrelPostProcessorProvider;
-import org.squirrelframework.foundation.fsm.*;
+import org.squirrelframework.foundation.fsm.ConverterProvider;
+import org.squirrelframework.foundation.fsm.HistoryType;
+import org.squirrelframework.foundation.fsm.StateMachineBuilder;
+import org.squirrelframework.foundation.fsm.StateMachineBuilderFactory;
+import org.squirrelframework.foundation.fsm.StateMachineConfiguration;
+import org.squirrelframework.foundation.fsm.StateMachineLogger;
+import org.squirrelframework.foundation.fsm.StateMachineStatus;
 import org.squirrelframework.foundation.fsm.annotation.State;
 import org.squirrelframework.foundation.fsm.annotation.States;
 import org.squirrelframework.foundation.fsm.annotation.Transit;
 import org.squirrelframework.foundation.fsm.annotation.Transitions;
 import org.squirrelframework.foundation.fsm.impl.AbstractStateMachine;
-
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
 
 
 public class Issue33 {
@@ -160,28 +168,27 @@ public class Issue33 {
     @Test
     public void testBasicHierarchicalState() {
         stateMachine.start();
-        assertThat(stateMachine.consumeLog(), is(equalTo("entryA..entryA1")));
-        assertThat(stateMachine.getCurrentState(), is(equalTo(HState.A1)));
+        assertEquals(stateMachine.consumeLog(),"entryA..entryA1");
+        assertEquals(stateMachine.getCurrentState(),HState.A1);
 
         stateMachine.fire(HEvent.A12A2);
 
-        assertThat(stateMachine.consumeLog(), is(equalTo("exitA1.transitA12A2..entryA2..entryA2a.enterA2a1")));
-        assertThat(stateMachine.getCurrentState(), is(equalTo(HState.A2a1)));
+        assertEquals(stateMachine.consumeLog(),"exitA1.transitA12A2..entryA2..entryA2a.enterA2a1");
+        assertEquals(stateMachine.getCurrentState(),HState.A2a1);
 
         stateMachine.fire(HEvent.A2a12A2a2);
 
-        assertThat(stateMachine.consumeLog(), is(equalTo("leftA2a1.transitA2a12A2a2.enterA2a2")));
-        assertThat(stateMachine.getCurrentState(), is(equalTo(HState.A2a2)));
+        assertEquals(stateMachine.consumeLog(),"leftA2a1.transitA2a12A2a2.enterA2a2");
+        assertEquals(stateMachine.getCurrentState(),HState.A2a2);
 
         stateMachine.fire(HEvent.A2B);
 
-        assertThat(stateMachine.consumeLog(), is(equalTo("leftA2a2..exitA2a..exitA2..exitA.transitA2B..entryB")));
-        assertThat(stateMachine.getCurrentState(), is(equalTo(HState.B)));
+        assertEquals(stateMachine.consumeLog(),"leftA2a2..exitA2a..exitA2..exitA.transitA2B..entryB");
+        assertEquals(stateMachine.getCurrentState(),HState.B);
 
         stateMachine.fire(HEvent.B2A);
 
-        assertThat(stateMachine.consumeLog(), is(equalTo("exitB.transitB2A..entryA..entryA2..entryA2a.enterA2a2")));
-        assertThat(stateMachine.getCurrentState(), is(equalTo(HState.A2a2)));
+        assertEquals(stateMachine.consumeLog(),"exitB.transitB2A..entryA..entryA2..entryA2a.enterA2a2");
+        assertEquals(stateMachine.getCurrentState(),HState.A2a2);
     }
-
 }

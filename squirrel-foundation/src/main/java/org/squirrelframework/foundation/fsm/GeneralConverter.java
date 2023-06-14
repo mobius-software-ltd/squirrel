@@ -21,7 +21,7 @@ public class GeneralConverter<T> implements Converter<T> {
         } else if(Date.class.isAssignableFrom(type)) {
             return Long.toString(((Date)obj).getTime());
         }
-        return obj != null ? obj.toString() : StringUtils.EMPTY;
+        return obj != null ? obj.toString() : "";
     }
 
     @Override

@@ -1,7 +1,6 @@
 package org.squirrelframework.foundation.fsm.threadsafe;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
@@ -64,13 +63,13 @@ public class StateMachineContextTest {
         fsm.addDeclarativeListener(new TestListener());
         String expected1 = (String) fsm.test(FSMEvent.ToA, 5);
         System.out.println("expected1: "+expected1);
-        assertThat(expected1, equalTo("A"));
+        assertEquals(expected1, "A");
         String expected2 = (String) fsm.test(FSMEvent.ToA, 11);
         System.out.println("expected2: "+expected2);
-        assertThat(expected2, equalTo("B"));
+        assertEquals(expected2, "B");
         String expected3 = (String) fsm.test(FSMEvent.ToA, 21);
         System.out.println("expected3: "+expected3);
-        assertThat(expected3, equalTo("C"));
+        assertEquals(expected3, "C");
     }
     
     @Test

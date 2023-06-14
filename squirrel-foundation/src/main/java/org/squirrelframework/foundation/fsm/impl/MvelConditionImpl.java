@@ -4,14 +4,14 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.squirrelframework.foundation.fsm.Condition;
 import org.squirrelframework.foundation.fsm.MvelScriptManager;
 
 class MvelConditionImpl<C> implements Condition<C> {
     
-    private static final Logger logger = LoggerFactory.getLogger(MvelConditionImpl.class);
+    private static final Logger logger = LogManager.getLogger(MvelConditionImpl.class);
     
     private final String mvelExpression;
     

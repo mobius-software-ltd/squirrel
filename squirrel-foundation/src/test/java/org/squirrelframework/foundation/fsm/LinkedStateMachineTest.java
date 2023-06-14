@@ -1,8 +1,7 @@
 package org.squirrelframework.foundation.fsm;
 
-import static org.hamcrest.Matchers.contains;
-import static org.hamcrest.Matchers.equalTo;
-import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -15,8 +14,6 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 
-import junit.framework.Assert;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.squirrelframework.foundation.fsm.annotation.State;
@@ -24,6 +21,8 @@ import org.squirrelframework.foundation.fsm.annotation.States;
 import org.squirrelframework.foundation.fsm.annotation.Transit;
 import org.squirrelframework.foundation.fsm.annotation.Transitions;
 import org.squirrelframework.foundation.fsm.impl.AbstractStateMachine;
+
+import junit.framework.Assert;
 
 public class LinkedStateMachineTest {
 
@@ -252,29 +251,29 @@ public class LinkedStateMachineTest {
         doTestInitialLinkedState(stateMachine, logger);
         logger.append("|");
         doTestInitialLinkedState(stateMachine2, logger);
-        assertThat(logger.toString(), equalTo("start1.enterA.start2.enterA1|start1.enterA.start2.enterA1"));
+        assertEquals(logger.toString(), "start1.enterA.start2.enterA1|start1.enterA.start2.enterA1");
     }
     
     private void doTestInitialLinkedState(TestStateMachine stateMachine, StringBuilder logger) {
         stateMachine.start(0);
-        assertThat(stateMachine.getCurrentState(), equalTo(LState.A1));
-        assertThat(stateMachine.getCurrentRawState().getStateId(), equalTo(LState.A1));
+        assertEquals(stateMachine.getCurrentState(), LState.A1);
+        assertEquals(stateMachine.getCurrentRawState().getStateId(), LState.A1);
     }
 
     @Test
     public void testLinkedStateMachineProcessEvent() {
         stateMachine.fire(LEvent.A12A2, 0);
-        assertThat(
+        assertEquals(
                 logger.toString(),
-                equalTo("start1.enterA.start2.enterA1.leftA1.transitA12A2.enterA2"));
+                "start1.enterA.start2.enterA1.leftA1.transitA12A2.enterA2");
     }
 
     @Test
     public void testTestStateMachineProcessEvent() {
         stateMachine.fire(LEvent.A2B, 0);
-        assertThat(
+        assertEquals(
                 logger.toString(),
-                equalTo("start1.enterA.start2.enterA1.terminate2.leftA1.leftA.transitA2B.enterB"));
+                "start1.enterA.start2.enterA1.terminate2.leftA1.leftA.transitA2B.enterB");
     }
 
     @Test
@@ -282,17 +281,17 @@ public class LinkedStateMachineTest {
         stateMachine.fire(LEvent.A2B, 0);
         stateMachine.fire(LEvent.B2C, 0);
         stateMachine.fire(LEvent.A22A3, 0);
-        assertThat(stateMachine.getCurrentState(), equalTo(LState.A3));
-        assertThat(stateMachine.getCurrentRawState().getStateId(), equalTo(LState.A3));
+        assertEquals(stateMachine.getCurrentState(), LState.A3);
+        assertEquals(stateMachine.getCurrentRawState().getStateId(), LState.A3);
     }
     
     @Test
     public void testSavedData() {
         stateMachine.fire(LEvent.A12A2, 0);
-        assertThat(stateMachine.getCurrentState(), equalTo(LState.A2));
+        assertEquals(stateMachine.getCurrentState(), LState.A2);
         StateMachineData.Reader<TestStateMachine, LState, LEvent, Integer> savedData = 
                 stateMachine.dumpSavedData();
-        assertThat(savedData.linkedStates(), contains(LState.A));
+        assertTrue(savedData.linkedStates().contains(LState.A));
         stateMachine.terminate(null);
         
         try {
@@ -321,11 +320,11 @@ public class LinkedStateMachineTest {
                     ObjectSerializableSupport.deserialize(fileContent);
             stateMachine.loadSavedData(loadedSavedData);
             stateMachine.fire(LEvent.A22A3, 0);
-            assertThat(stateMachine.getCurrentState(), equalTo(LState.A3));
+            assertEquals(stateMachine.getCurrentState(), LState.A3);
         } catch (Exception ex) {
             ex.printStackTrace();
             Assert.fail();
-        } 
+        }         
 
     }
 }

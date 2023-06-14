@@ -4,8 +4,8 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.squirrelframework.foundation.fsm.Action;
 import org.squirrelframework.foundation.fsm.StateMachine;
 import org.squirrelframework.foundation.fsm.annotation.AsyncExecute;
@@ -19,7 +19,7 @@ import com.google.common.collect.Lists;
 
 public class MethodCallActionImpl<T extends StateMachine<T, S, E, C>, S, E, C> implements Action<T, S, E, C> {
     
-    final static Logger logger = LoggerFactory.getLogger(MethodCallActionImpl.class);
+    final static Logger logger = LogManager.getLogger(MethodCallActionImpl.class);
 
     private final Method method;
     

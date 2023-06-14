@@ -1,19 +1,12 @@
 package org.squirrelframework.foundation.component;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.empty;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.instanceOf;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.notNullValue;
-import static org.hamcrest.Matchers.sameInstance;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
 import org.junit.Test;
-import org.squirrelframework.foundation.component.SquirrelPostProcessor;
-import org.squirrelframework.foundation.component.SquirrelPostProcessorProvider;
-import org.squirrelframework.foundation.component.SquirrelProvider;
 
 public class ComponentPostProcessorTest {
     
@@ -27,9 +20,9 @@ public class ComponentPostProcessorTest {
         });
         
         Person p = SquirrelProvider.getInstance().newInstance(Person.class);
-        assertThat(p, notNullValue());
-        assertThat(p, instanceOf(PersonImpl.class));
-        assertThat(p.getName(), equalTo("Henry"));
+        assertNotNull(p);
+        assertTrue(p instanceof PersonImpl);
+        assertEquals(p.getName(), "Henry");
         
         SquirrelPostProcessorProvider.getInstance().unregister(Person.class);
     }
@@ -44,21 +37,21 @@ public class ComponentPostProcessorTest {
         SquirrelPostProcessorProvider.getInstance().register(Person.class, pp);
         List<SquirrelPostProcessor<? super Student>> studentPostProcessors = SquirrelPostProcessorProvider.
                 getInstance().getCallablePostProcessors(Student.class);
-        assertThat((SquirrelPostProcessor<Object>)studentPostProcessors.get(0), sameInstance(pp));
+        assertTrue((SquirrelPostProcessor<Object>)studentPostProcessors.get(0) == pp);
         SquirrelPostProcessorProvider.getInstance().unregister(Person.class);
         
         SquirrelPostProcessorProvider.getInstance().register(Student.class, pp);
         List<SquirrelPostProcessor<? super Person>> personPostProcessors = SquirrelPostProcessorProvider.
                 getInstance().getCallablePostProcessors(Person.class);
-        assertThat(personPostProcessors, empty());
+        assertEquals(personPostProcessors.size(), 0);
         SquirrelPostProcessorProvider.getInstance().unregister(Student.class);
         
         SquirrelPostProcessorProvider.getInstance().register(Person.class, pp);
         SquirrelPostProcessorProvider.getInstance().register(Student.class, pp);
         List<SquirrelPostProcessor<? super Student>> studentAndPersonPostProcessors = SquirrelPostProcessorProvider.
                 getInstance().getCallablePostProcessors(Student.class);
-        assertThat((SquirrelPostProcessor<Object>)studentAndPersonPostProcessors.get(0), sameInstance(pp));
-        assertThat((SquirrelPostProcessor<Object>)studentAndPersonPostProcessors.get(1), sameInstance(pp));
+        assertTrue((SquirrelPostProcessor<Object>)studentAndPersonPostProcessors.get(0) == pp);
+        assertTrue((SquirrelPostProcessor<Object>)studentAndPersonPostProcessors.get(1) == pp);
         SquirrelPostProcessorProvider.getInstance().unregister(Person.class);
         SquirrelPostProcessorProvider.getInstance().unregister(Student.class);
         
@@ -83,11 +76,11 @@ public class ComponentPostProcessorTest {
         
         List<SquirrelPostProcessor<? super Student>> studentPostProcessors = SquirrelPostProcessorProvider.
                 getInstance().getCallablePostProcessors(Student.class);
-        assertThat(studentPostProcessors.size(), is(1));
+        assertEquals(studentPostProcessors.size(), 1);
         
         Student student = SquirrelProvider.getInstance().newInstance(Student.class);
-        assertThat(student.getName(), equalTo("Henry"));
-        assertThat(student.getSchool(), equalTo("XJTU"));
+        assertEquals(student.getName(), "Henry");
+        assertEquals(student.getSchool(), "XJTU");
         
         SquirrelPostProcessorProvider.getInstance().unregister(Student.class);
         SquirrelPostProcessorProvider.getInstance().unregister(Student.class);

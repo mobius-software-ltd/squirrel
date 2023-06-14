@@ -1,5 +1,22 @@
 package org.squirrelframework.foundation.fsm;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.squirrelframework.foundation.fsm.TestEvent.InternalA;
+import static org.squirrelframework.foundation.fsm.TestEvent.Started;
+import static org.squirrelframework.foundation.fsm.TestEvent.Terminated;
+import static org.squirrelframework.foundation.fsm.TestEvent.ToB;
+import static org.squirrelframework.foundation.fsm.TestEvent.ToC;
+import static org.squirrelframework.foundation.fsm.TestEvent.ToD;
+import static org.squirrelframework.foundation.fsm.TestEvent.ToEnd;
+import static org.squirrelframework.foundation.fsm.TestState.A;
+import static org.squirrelframework.foundation.fsm.TestState.B;
+import static org.squirrelframework.foundation.fsm.TestState.C;
+import static org.squirrelframework.foundation.fsm.TestState.D;
+import static org.squirrelframework.foundation.fsm.TestState.Final;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InOrder;
@@ -9,13 +26,6 @@ import org.mockito.MockitoAnnotations;
 import org.squirrelframework.foundation.exception.TransitionException;
 import org.squirrelframework.foundation.fsm.annotation.ContextEvent;
 import org.squirrelframework.foundation.fsm.impl.AbstractStateMachine;
-
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.squirrelframework.foundation.fsm.TestEvent.*;
-import static org.squirrelframework.foundation.fsm.TestState.*;
 
 public class ConventionalStateMachineTest extends AbstractStateMachineTest {
     
@@ -230,13 +240,13 @@ public class ConventionalStateMachineTest extends AbstractStateMachineTest {
     
     @Test
     public void testLastState() {
-        assertThat(stateMachine.getLastRawState(), equalTo(null));
+        assertNull(stateMachine.getLastRawState());
         stateMachine.fire(ToB, null);
-        assertThat(stateMachine.getLastState(), equalTo(A));
+        assertEquals(stateMachine.getLastState(), A);
         stateMachine.fire(ToC, null);
-        assertThat(stateMachine.getLastState(), equalTo(B));
+        assertEquals(stateMachine.getLastState(), B);
         stateMachine.fire(ToD, 81);
-        assertThat(stateMachine.getLastState(), equalTo(C));
+        assertEquals(stateMachine.getLastState(), C);
     }
     
     @Test
@@ -250,7 +260,7 @@ public class ConventionalStateMachineTest extends AbstractStateMachineTest {
         callSequence.verify(monitor, Mockito.times(0)).beforeEntryAny(null, A, InternalA, null);
         callSequence.verify(monitor, Mockito.times(0)).entryA(null, A, InternalA, null);
         callSequence.verify(monitor, Mockito.times(0)).afterEntryAny(null, A, InternalA, null);
-        assertThat(stateMachine.getCurrentState(), equalTo(A));
+        assertEquals(stateMachine.getCurrentState(), A);
     }
     
     @Test
@@ -264,7 +274,7 @@ public class ConventionalStateMachineTest extends AbstractStateMachineTest {
         callSequence.verify(monitor, Mockito.times(1)).beforeEntryAny(null, B, ToB, null);
         callSequence.verify(monitor, Mockito.times(1)).entryB(null, B, ToB, null);
         callSequence.verify(monitor, Mockito.times(1)).afterEntryAny(null, B, ToB, null);
-        assertThat(stateMachine.getCurrentState(), equalTo(B));
+        assertEquals(stateMachine.getCurrentState(), B);
     }
     
     @Test
@@ -275,7 +285,7 @@ public class ConventionalStateMachineTest extends AbstractStateMachineTest {
         callSequence.verify(monitor, Mockito.times(1)).beforeTransitionBegin(B, ToB, null);
         callSequence.verify(monitor, Mockito.times(0)).exitB(B, null, ToB, null);
         callSequence.verify(monitor, Mockito.times(1)).afterTransitionDeclined(B, ToB, null);
-        assertThat(stateMachine.getCurrentState(), equalTo(B));
+        assertEquals(stateMachine.getCurrentState(), B);
     }
     
     @Test
@@ -287,7 +297,7 @@ public class ConventionalStateMachineTest extends AbstractStateMachineTest {
         callSequence.verify(monitor, Mockito.times(1)).fromBToCOnToC(B, C, ToC, null);
         callSequence.verify(monitor, Mockito.times(1)).beforeTransitionBegin(C, ToD, 50);
         callSequence.verify(monitor, Mockito.times(1)).afterTransitionDeclined(C, ToD, 50);
-        assertThat(stateMachine.getCurrentState(), equalTo(TestState.C));
+        assertEquals(stateMachine.getCurrentState(), TestState.C);
         
         stateMachine.fire(ToD, 81);
         
@@ -305,7 +315,7 @@ public class ConventionalStateMachineTest extends AbstractStateMachineTest {
         callSequence.verify(monitor, Mockito.times(1)).entryD(null, D, ToD, 81);
         callSequence.verify(monitor, Mockito.times(1)).afterEntryAny(null, D, ToD, 81);
         callSequence.verify(monitor, Mockito.times(1)).afterTransitionCompleted(C, D, ToD, 81);
-        assertThat(stateMachine.getCurrentState(), equalTo(TestState.D));
+        assertEquals(stateMachine.getCurrentState(), TestState.D);
     }
     
     @Test(expected=TransitionException.class)
@@ -334,7 +344,7 @@ public class ConventionalStateMachineTest extends AbstractStateMachineTest {
         callSequence.verify(monitor, Mockito.times(1)).afterTransitionCompleted(D, Final, ToEnd, null);
         callSequence.verify(monitor, Mockito.times(1)).terminate();
         
-        assertThat(stateMachine.getStatus(), equalTo(StateMachineStatus.TERMINATED));
+        assertEquals(stateMachine.getStatus(), StateMachineStatus.TERMINATED);
     }
     
     @Test
@@ -350,9 +360,9 @@ public class ConventionalStateMachineTest extends AbstractStateMachineTest {
     @Test(expected=RuntimeException.class)
     public void testFireEventToTerminatedFSM() {
         stateMachine.fire(ToB, null);
-        assertThat(stateMachine.getCurrentState(), equalTo(B));
+        assertEquals(stateMachine.getCurrentState(), B);
         stateMachine.terminate(0);
-        assertThat(stateMachine.getStatus(), equalTo(StateMachineStatus.TERMINATED));
+        assertEquals(stateMachine.getStatus(), StateMachineStatus.TERMINATED);
         stateMachine.fire(ToC, null);
     }
 }

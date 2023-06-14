@@ -1,13 +1,13 @@
 package org.squirrelframework.foundation.issues;
 
-import static org.hamcrest.Matchers.containsInAnyOrder;
-import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
 import org.junit.Test;
+import org.squirrelframework.foundation.fsm.DeclarativeStateMachineTest;
 import org.squirrelframework.foundation.fsm.StateMachine;
 import org.squirrelframework.foundation.fsm.StateMachineBuilder;
 import org.squirrelframework.foundation.fsm.StateMachineBuilderFactory;
@@ -76,15 +76,15 @@ public class Issue5 {
  
         fsm.start();
         List<St> subStates = fsm.getSubStatesOn(St.Root);
-        assertThat(subStates, containsInAnyOrder(St.St1_1, St.St2_1));
+        assertTrue(DeclarativeStateMachineTest.containsInAnyOrder(subStates, Arrays.asList(new St[] {St.St1_1, St.St2_1 })));
         
         fsm.fire(Ev.Ev1_1, null);
         subStates = fsm.getSubStatesOn(St.Root);
-        assertThat(subStates, containsInAnyOrder(St.St1_2, St.St2_1));
+        assertTrue(DeclarativeStateMachineTest.containsInAnyOrder(subStates, Arrays.asList(new St[] {St.St1_2, St.St2_1 })));
         
         fsm.fire(Ev.Ev2_1, null);
         subStates = fsm.getSubStatesOn(St.Root);
-        assertThat(subStates, containsInAnyOrder(St.St1_2, St.St2_2));
+        assertTrue(DeclarativeStateMachineTest.containsInAnyOrder(subStates, Arrays.asList(new St[] {St.St1_2, St.St2_2 })));
     }
  
     private static class FSM extends AbstractStateMachine<FSM, St, Ev, Object> {

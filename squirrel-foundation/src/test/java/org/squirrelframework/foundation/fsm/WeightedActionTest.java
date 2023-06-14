@@ -1,8 +1,6 @@
 package org.squirrelframework.foundation.fsm;
 
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertEquals;
 
 import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.After;
@@ -134,19 +132,19 @@ public class WeightedActionTest {
     @Test
     public void testBeforeExtension() {
         fsm.fire("ToB");
-        assertThat(fsm.consumeLog(), is(equalTo("beforeFromAToB.fromAToB.transitFromAToBOnToB.afterFromAToB")));
+        assertEquals(fsm.consumeLog(),"beforeFromAToB.fromAToB.transitFromAToBOnToB.afterFromAToB");
     }
     
     @Test
     public void testWeightTransitionAction() {
         fsm.fire("ToC");
-        assertThat(fsm.consumeLog(), is(equalTo("goAToC1.fromAToC.goAToC2")));
+        assertEquals(fsm.consumeLog(),"goAToC1.fromAToC.goAToC2");
     }
     
     @Test
     public void testWeightStateAction() {
         fsm.fire("ToD");
-        assertThat(fsm.consumeLog(), is(equalTo("beforeEntryD.entryD.goEntryD")));
+        assertEquals(fsm.consumeLog(),"beforeEntryD.entryD.goEntryD");
     }
     
     @Test
@@ -156,7 +154,7 @@ public class WeightedActionTest {
         logger = new StateMachineLogger(fsm);
         logger.startLogging();
         fsm.fire("ToD");
-        assertThat(fsm.consumeLog(), is(equalTo("entryD.beforeEntryD.goEntryD")));
+        assertEquals(fsm.consumeLog(),"entryD.beforeEntryD.goEntryD");
     }
     
     @Test
@@ -167,6 +165,6 @@ public class WeightedActionTest {
         logger = new StateMachineLogger(fsm);
         logger.startLogging();
         fsm.fire("ToD");
-        assertThat(fsm.consumeLog(), is(equalTo("beforeEntryD.goEntryD")));
+        assertEquals(fsm.consumeLog(),"beforeEntryD.goEntryD");
     }
 }

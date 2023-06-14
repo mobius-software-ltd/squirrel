@@ -1,15 +1,15 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
     <parent>
-        <groupId>org.restcomm</groupId>
-        <artifactId>restcomm-parent</artifactId>
-        <version>3.0.5</version>
-     </parent>
+		<groupId>org.restcomm</groupId>
+		<artifactId>restcomm-parent</artifactId>
+		<version>8.0.0-30</version>
+	</parent>
 
     <modelVersion>4.0.0</modelVersion>
-    <groupId>org.restcomm.fsm</groupId>
+    <groupId>com.mobius-software.fsm</groupId>
     <artifactId>squirrel-foundation</artifactId>
-    <version>0.3.9-SNAPSHOT</version>
+    <version>0.4.0-SNAPSHOT</version>
     <packaging>bundle</packaging>
     <name>squirrel foundation</name>
     <description>foundation module of squirrel framework which provided event driven infrastructure and a finite state machine implementation.</description>
@@ -20,7 +20,7 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <java.version>1.6</java.version>
+        <java.version>1.8</java.version>
     </properties>
 
     <developers>
@@ -34,12 +34,17 @@
             <name>Henrique Rosa</name>
             <email>henrique.rosa@telestax.com</email>
         </developer>
+        <developer>
+            <id>yulian.oifa</id>
+            <name>Yulian Oifa</name>
+            <email>yulian.oifa@mobius-software.com</email>
+        </developer>
     </developers>
 
     <scm>
-        <connection>scm:git:git://github.com/RestComm/squirrel.git</connection>
-        <developerConnection>scm:git:git@github.com:RestComm/squirrel.git</developerConnection>
-        <url>https://github.com/RestComm/squirrel.git</url>
+        <connection>scm:git:git://github.com/mobius-software-ltd/squirrel.git</connection>
+        <developerConnection>scm:git:git@github.com:mobius-software-ltd/squirrel.git</developerConnection>
+        <url>https://github.com/mobius-software-ltd/squirrel</url>
       <tag>HEAD</tag>
   </scm>
 
@@ -57,26 +62,13 @@
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-all</artifactId>
-            <version>1.9.5</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.hamcrest</groupId>
-            <artifactId>hamcrest-all</artifactId>
-            <version>1.3</version>
+            <version>1.10.19</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>4.10</version>
-            <scope>test</scope>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.hamcrest</groupId>
-                    <artifactId>hamcrest-core</artifactId>
-                </exclusion>
-            </exclusions>
+            <scope>test</scope>           
         </dependency>
         <!-- Project dependencies -->
         <dependency>
@@ -84,16 +76,16 @@
             <artifactId>guava</artifactId>
             <version>16.0.1</version>
         </dependency>
-        <dependency>
-            <groupId>log4j</groupId>
-            <artifactId>log4j</artifactId>
-            <version>1.2.12</version>
-        </dependency>
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-log4j12</artifactId>
-            <version>1.6.1</version>
-        </dependency>
+       <dependency>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-core</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-api</artifactId>
+			<scope>provided</scope>
+		</dependency>
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
@@ -129,7 +121,6 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-source-plugin</artifactId>
-                <version>2.1.2</version>
                 <executions>
                     <execution>
                         <id>attach-sources</id>

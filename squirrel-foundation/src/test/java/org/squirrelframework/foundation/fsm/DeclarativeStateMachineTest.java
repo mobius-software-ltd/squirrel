@@ -1,9 +1,12 @@
 package org.squirrelframework.foundation.fsm;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.containsInAnyOrder;
-import static org.hamcrest.Matchers.equalTo;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -242,7 +245,7 @@ public class DeclarativeStateMachineTest extends AbstractStateMachineTest {
                 null, TestState.A, TestEvent.InternalA, null);
         callSequence.verify(monitor, Mockito.times(1)).afterTransitionCompleted(
                 TestState.A, TestState.A, TestEvent.InternalA, null);
-        assertThat(stateMachine.getCurrentState(), equalTo(TestState.A));
+        assertEquals(stateMachine.getCurrentState(), TestState.A);
     }
 
     @Test
@@ -260,7 +263,7 @@ public class DeclarativeStateMachineTest extends AbstractStateMachineTest {
                 null, TestState.B, TestEvent.ToB, null);
         callSequence.verify(monitor, Mockito.times(1)).afterTransitionCompleted(
                 TestState.A, TestState.B, TestEvent.ToB, null);
-        assertThat(stateMachine.getCurrentState(), equalTo(TestState.B));
+        assertEquals(stateMachine.getCurrentState(), TestState.B);
     }
 
     @Test
@@ -274,7 +277,7 @@ public class DeclarativeStateMachineTest extends AbstractStateMachineTest {
                 TestState.B, null, TestEvent.ToB, null);
         callSequence.verify(monitor, Mockito.times(1)).afterTransitionDeclined(
                 TestState.B, TestEvent.ToB, null);
-        assertThat(stateMachine.getCurrentState(), equalTo(TestState.B));
+        assertEquals(stateMachine.getCurrentState(), TestState.B);
     }
 
     @Test
@@ -294,7 +297,7 @@ public class DeclarativeStateMachineTest extends AbstractStateMachineTest {
 
         callSequence.verify(monitor, Mockito.times(1)).afterTransitionCompleted(
                 TestState.B, TestState.C, TestEvent.ToC, null);
-        assertThat(stateMachine.getCurrentState(), equalTo(TestState.C));
+        assertEquals(stateMachine.getCurrentState(), TestState.C);
     }
 
     @Test
@@ -307,7 +310,7 @@ public class DeclarativeStateMachineTest extends AbstractStateMachineTest {
                 TestState.C, TestEvent.ToD, -10);
         callSequence.verify(monitor, Mockito.times(1)).afterTransitionDeclined(
                 TestState.C, TestEvent.ToD, -10);
-        assertThat(stateMachine.getCurrentState(), equalTo(TestState.C));
+        assertEquals(stateMachine.getCurrentState(), TestState.C);
 
         stateMachine.fire(TestEvent.ToD, 81);
         callSequence.verify(monitor, Mockito.times(1)).beforeTransitionBegin(
@@ -320,7 +323,7 @@ public class DeclarativeStateMachineTest extends AbstractStateMachineTest {
                 null, TestState.D, TestEvent.ToD, 81);
         callSequence.verify(monitor, Mockito.times(1)).afterTransitionCompleted(
                 TestState.C, TestState.D, TestEvent.ToD, 81);
-        assertThat(stateMachine.getCurrentState(), equalTo(TestState.D));
+        assertEquals(stateMachine.getCurrentState(), TestState.D);
     }
     
     @Test
@@ -340,14 +343,14 @@ public class DeclarativeStateMachineTest extends AbstractStateMachineTest {
                 null, TestState.D, TestEvent.ToD, 41);
         callSequence.verify(monitor, Mockito.times(1)).afterTransitionCompleted(
                 TestState.C, TestState.D, TestEvent.ToD, 41);
-        assertThat(stateMachine.getCurrentState(), equalTo(TestState.D));
+        assertEquals(stateMachine.getCurrentState(), TestState.D);
     }
 
     @Test
     public void testTransitionWithException() {
         InOrder callSequence = Mockito.inOrder(monitor);
-        assertThat(stateMachine.getInitialRawState().getAcceptableEvents(), 
-                containsInAnyOrder(TestEvent.InternalA, TestEvent.ToB));
+        assertTrue(containsInAnyOrder(stateMachine.getInitialRawState().getAcceptableEvents(), 
+                Arrays.asList(new TestEvent[] {TestEvent.InternalA, TestEvent.ToB })));
         stateMachine.fire(TestEvent.ToB, null);
         stateMachine.fire(TestEvent.ToC, null);
         stateMachine.fire(TestEvent.ToD, 81);
@@ -360,7 +363,7 @@ public class DeclarativeStateMachineTest extends AbstractStateMachineTest {
         callSequence.verify(monitor, Mockito.times(1)).transitionWithException(
                 TestState.D, TestState.A, TestEvent.ToA, 50);
         
-        assertThat(stateMachine.getCurrentState(), equalTo(TestState.D));
+        assertEquals(stateMachine.getCurrentState(), TestState.D);
     }
 
     @Test
@@ -381,6 +384,14 @@ public class DeclarativeStateMachineTest extends AbstractStateMachineTest {
         callSequence.verify(monitor, Mockito.times(1)).afterTransitionCompleted(
                 TestState.D, TestState.Final, TestEvent.ToEnd, -1);
         callSequence.verify(monitor, Mockito.times(1)).terminate(-1);
-        assertThat(stateMachine.getStatus(), equalTo(StateMachineStatus.TERMINATED));
+        assertEquals(stateMachine.getStatus(), StateMachineStatus.TERMINATED);
+    }
+    
+    public static boolean containsInAnyOrder(Collection<?> list,List<?> segment) {
+    	for(int i=0;i<segment.size();i++) 
+    		if(!list.contains(segment.get(i)))
+    				return false;
+    		
+    	return true;
     }
 }

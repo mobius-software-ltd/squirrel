@@ -6,8 +6,8 @@ import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.squirrelframework.foundation.component.SquirrelInstanceProvider;
 import org.squirrelframework.foundation.component.SquirrelPostProcessor;
 import org.squirrelframework.foundation.component.SquirrelPostProcessorProvider;
@@ -34,7 +34,7 @@ public class StateMachineBuilderImpl<T extends StateMachine<T, S, E, C>, S, E, C
         DuplicateChecker.checkDuplicate(StateMachineBuilder.class);
     }
     
-    private static final Logger logger = LoggerFactory.getLogger(StateMachineBuilderImpl.class);
+    private static final Logger logger = LogManager.getLogger(StateMachineBuilderImpl.class);
     
     private final Map<S, MutableState<T, S, E, C>> states = Maps.newConcurrentMap();
     

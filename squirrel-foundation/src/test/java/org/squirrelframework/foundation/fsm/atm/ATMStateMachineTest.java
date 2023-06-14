@@ -1,8 +1,6 @@
 package org.squirrelframework.foundation.fsm.atm;
 
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertEquals;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -56,28 +54,28 @@ public class ATMStateMachineTest {
     @Test
     public void testIdelToInService() {
         stateMachine.start();
-        assertThat(stateMachine.consumeLog(), is(equalTo("entryIdle")));
-        assertThat(stateMachine.getCurrentState(), is(equalTo(ATMState.Idle)));
+        assertEquals(stateMachine.consumeLog(), "entryIdle");
+        assertEquals(stateMachine.getCurrentState(), ATMState.Idle);
         
         stateMachine.fire("Connected");
-        assertThat(stateMachine.consumeLog(), is(equalTo("exitIdle.transitFromIdleToLoadingOnConnected.entryLoading")));
-        assertThat(stateMachine.getCurrentState(), is(equalTo(ATMState.Loading)));
+        assertEquals(stateMachine.consumeLog(), "exitIdle.transitFromIdleToLoadingOnConnected.entryLoading");
+        assertEquals(stateMachine.getCurrentState(), ATMState.Loading);
         
         stateMachine.fire("LoadSuccess");
-        assertThat(stateMachine.consumeLog(), is(equalTo("exitLoading.transitFromLoadingToInServiceOnLoadSuccess.entryInService")));
-        assertThat(stateMachine.getCurrentState(), is(equalTo(ATMState.InService)));
+        assertEquals(stateMachine.consumeLog(), "exitLoading.transitFromLoadingToInServiceOnLoadSuccess.entryInService");
+        assertEquals(stateMachine.getCurrentState(), ATMState.InService);
         
         stateMachine.fire("Shutdown");
-        assertThat(stateMachine.consumeLog(), is(equalTo("exitInService.transitFromInServiceToOutOfServiceOnShutdown.entryOutOfService")));
-        assertThat(stateMachine.getCurrentState(), is(equalTo(ATMState.OutOfService)));
+        assertEquals(stateMachine.consumeLog(), "exitInService.transitFromInServiceToOutOfServiceOnShutdown.entryOutOfService");
+        assertEquals(stateMachine.getCurrentState(), ATMState.OutOfService);
         
         stateMachine.fire("ConnectionLost");
-        assertThat(stateMachine.consumeLog(), is(equalTo("exitOutOfService.transitFromOutOfServiceToDisconnectedOnConnectionLost.entryDisconnected")));
-        assertThat(stateMachine.getCurrentState(), is(equalTo(ATMState.Disconnected)));
+        assertEquals(stateMachine.consumeLog(), "exitOutOfService.transitFromOutOfServiceToDisconnectedOnConnectionLost.entryDisconnected");
+        assertEquals(stateMachine.getCurrentState(), ATMState.Disconnected);
         
         stateMachine.fire("ConnectionRestored");
-        assertThat(stateMachine.consumeLog(), is(equalTo("exitDisconnected.transitFromDisconnectedToInServiceOnConnectionRestored.entryInService")));
-        assertThat(stateMachine.getCurrentState(), is(equalTo(ATMState.InService)));
+        assertEquals(stateMachine.consumeLog(), "exitDisconnected.transitFromDisconnectedToInServiceOnConnectionRestored.entryInService");
+        assertEquals(stateMachine.getCurrentState(), ATMState.InService);
     }
     
     @Test
@@ -90,12 +88,12 @@ public class ATMStateMachineTest {
         
         ATMStateMachine stateMachine = builder.newAnyStateMachine(ATMState.Idle);
         stateMachine.start();
-        assertThat(stateMachine.consumeLog(), is(equalTo("entryIdle")));
-        assertThat(stateMachine.getCurrentState(), is(equalTo(ATMState.Idle)));
+        assertEquals(stateMachine.consumeLog(), "entryIdle");
+        assertEquals(stateMachine.getCurrentState(), ATMState.Idle);
         
         stateMachine.fire("Connected");
-        assertThat(stateMachine.consumeLog(), is(equalTo("exitIdle.transitFromIdleToLoadingOnConnected.entryLoading")));
-        assertThat(stateMachine.getCurrentState(), is(equalTo(ATMState.Loading)));
+        assertEquals(stateMachine.consumeLog(), "exitIdle.transitFromIdleToLoadingOnConnected.entryLoading");
+        assertEquals(stateMachine.getCurrentState(), ATMState.Loading);
     }
 
 }

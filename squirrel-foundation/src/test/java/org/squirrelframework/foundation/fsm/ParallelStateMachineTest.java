@@ -1,20 +1,25 @@
 package org.squirrelframework.foundation.fsm;
 
-import com.google.common.collect.Lists;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
+import java.util.Arrays;
+import java.util.List;
+
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
 import org.squirrelframework.foundation.component.SquirrelProvider;
 import org.squirrelframework.foundation.fsm.StateMachine.TransitionDeclinedEvent;
-import org.squirrelframework.foundation.fsm.annotation.*;
+import org.squirrelframework.foundation.fsm.annotation.ContextEvent;
+import org.squirrelframework.foundation.fsm.annotation.State;
+import org.squirrelframework.foundation.fsm.annotation.States;
+import org.squirrelframework.foundation.fsm.annotation.Transit;
+import org.squirrelframework.foundation.fsm.annotation.Transitions;
 import org.squirrelframework.foundation.fsm.impl.AbstractStateMachine;
 
-import java.util.List;
-
-import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
+import com.google.common.collect.Lists;
 
 public class ParallelStateMachineTest {
 
@@ -237,9 +242,9 @@ public class ParallelStateMachineTest {
     @Test
     public void testInitialParallelStates() {
         stateMachine.start();
-        assertThat(stateMachine.consumeLog(), is(equalTo("enterTotal.enterA.enterA1.enterA1a.enterA2.enterA2b")));
-        assertThat(stateMachine.getCurrentState(), is(equalTo(PState.A)));
-        assertThat(stateMachine.getSubStatesOn(PState.A), contains(PState.A1a, PState.A2b));
+        assertEquals(stateMachine.consumeLog(),"enterTotal.enterA.enterA1.enterA1a.enterA2.enterA2b");
+        assertEquals(stateMachine.getCurrentState(),PState.A);
+        assertTrue(contains(stateMachine.getSubStatesOn(PState.A),Arrays.asList(new PState[] {PState.A1a, PState.A2b })));
     }
 
     @Test
@@ -253,12 +258,12 @@ public class ParallelStateMachineTest {
         stateMachine.start();
         stateMachine.consumeLog();
         stateMachine.fire(PEvent.A1a2A1b, 1);
-        assertThat(stateMachine.consumeLog(), is(equalTo("exitA1a.transitA1a2A1b.enterA1b")));
-        assertThat(stateMachine.getCurrentState(), is(equalTo(PState.A)));
-        assertThat(stateMachine.getSubStatesOn(PState.A), contains(PState.A2b, PState.A1b));
+        assertEquals(stateMachine.consumeLog(),"exitA1a.transitA1a2A1b.enterA1b");
+        assertEquals(stateMachine.getCurrentState(),PState.A);
+        assertTrue(contains(stateMachine.getSubStatesOn(PState.A),Arrays.asList(new PState[] {PState.A2b, PState.A1b })));
 
         stateMachine.terminate(null);
-        assertThat(stateMachine.consumeLog(), is(equalTo("exitA2b.exitA2.exitA1b.exitA1.exitA.exitTotal")));
+        assertEquals(stateMachine.consumeLog(),"exitA2b.exitA2.exitA1b.exitA1.exitA.exitTotal");
     }
 
     @Test
@@ -268,16 +273,16 @@ public class ParallelStateMachineTest {
         stateMachine.fire(PEvent.A1a2A1b, 1);
         stateMachine.consumeLog();
         stateMachine.fire(PEvent.A1b2A1c, 1);
-        assertThat(stateMachine.consumeLog(), is(equalTo("exitA1b.transitA1b2A1c.enterA1c")));
-        assertThat(stateMachine.getCurrentState(), is(equalTo(PState.A)));
-        assertThat(stateMachine.getSubStatesOn(PState.A), contains(PState.A2b, PState.A1c));
+        assertEquals(stateMachine.consumeLog(),"exitA1b.transitA1b2A1c.enterA1c");
+        assertEquals(stateMachine.getCurrentState(),PState.A);
+        assertTrue(contains(stateMachine.getSubStatesOn(PState.A),Arrays.asList(new PState[] {PState.A2b, PState.A1c })));
 
         stateMachine.fire(PEvent.A2b2A2c, 1);
-        assertThat(stateMachine.consumeLog(), is(equalTo("exitA2b.transitA2b2A2c.enterA2c.exitA1.exitA2.exitA.transitA2C.enterC")));
-        assertThat(stateMachine.getCurrentState(), is(equalTo(PState.C)));
+        assertEquals(stateMachine.consumeLog(),"exitA2b.transitA2b2A2c.enterA2c.exitA1.exitA2.exitA.transitA2C.enterC");
+        assertEquals(stateMachine.getCurrentState(),PState.C);
 
         stateMachine.terminate(null);
-        assertThat(stateMachine.consumeLog(), is(equalTo("exitC.exitTotal")));
+        assertEquals(stateMachine.consumeLog(),"exitC.exitTotal");
     }
 
     @Test
@@ -292,22 +297,22 @@ public class ParallelStateMachineTest {
         StateMachineData.Reader<ParallelStateMachine, PState, PEvent, Integer> savedData = 
                 stateMachine.dumpSavedData();
         stateMachine.terminate(null);
-        assertThat(savedData.currentState(), is(equalTo(PState.A)));
-        assertThat(savedData.lastActiveChildStateOf(PState.A1), is(equalTo(PState.A1b)));
+        assertEquals(savedData.currentState(),PState.A);
+        assertEquals(savedData.lastActiveChildStateOf(PState.A1),PState.A1b);
         
         List<PState> expectedResult = Lists.newArrayList(PState.A2b, PState.A1c);
-        assertThat(savedData.subStatesOn(PState.A), is(equalTo(expectedResult)));
+        assertEquals(savedData.subStatesOn(PState.A),expectedResult);
         
         stateMachine = StateMachineBuilderFactory.create(savedData.typeOfStateMachine(), savedData.typeOfState(), 
                 savedData.typeOfEvent(), savedData.typeOfContext()).newStateMachine(PState.A);
         stateMachine.loadSavedData(savedData);
         
         stateMachine.fire(PEvent.A2b2A2c, 1);
-        assertThat(stateMachine.consumeLog(), is(equalTo("exitA2b.transitA2b2A2c.enterA2c.exitA1.exitA2.exitA.transitA2C.enterC")));
-        assertThat(stateMachine.getCurrentState(), is(equalTo(PState.C)));
+        assertEquals(stateMachine.consumeLog(),"exitA2b.transitA2b2A2c.enterA2c.exitA1.exitA2.exitA.transitA2C.enterC");
+        assertEquals(stateMachine.getCurrentState(),PState.C);
         
         stateMachine.terminate();
-        assertThat(stateMachine.consumeLog(), is(equalTo("exitC.exitTotal")));
+        assertEquals(stateMachine.consumeLog(),"exitC.exitTotal");
     }
 
     @Test
@@ -315,32 +320,32 @@ public class ParallelStateMachineTest {
         stateMachine.start();
         stateMachine.consumeLog();
         stateMachine.fire(PEvent.A1a2B, 1);
-        assertThat(stateMachine.consumeLog(), is(equalTo("exitA1a.exitA1.exitA2b.exitA2.exitA.transitA1a2B.enterB")));
-        assertThat(stateMachine.getCurrentState(), is(equalTo(PState.B)));
+        assertEquals(stateMachine.consumeLog(),"exitA1a.exitA1.exitA2b.exitA2.exitA.transitA1a2B.enterB");
+        assertEquals(stateMachine.getCurrentState(),PState.B);
     }
 
     @Test
     public void testHistoricalState() {
         stateMachine.start();
-        assertThat(stateMachine.getCurrentState(), is(equalTo(PState.A)));
-        assertThat(stateMachine.getSubStatesOn(PState.A), contains(PState.A1a, PState.A2b));
+        assertEquals(stateMachine.getCurrentState(),PState.A);
+        assertTrue(contains(stateMachine.getSubStatesOn(PState.A),Arrays.asList(new PState[] {PState.A1a, PState.A2b })));
 
         stateMachine.fire(PEvent.A1a2A1b, 1);
-        assertThat(stateMachine.getCurrentState(), is(equalTo(PState.A)));
-        assertThat(stateMachine.getSubStatesOn(PState.A), contains(PState.A2b, PState.A1b));
+        assertEquals(stateMachine.getCurrentState(),PState.A);
+        assertTrue(contains(stateMachine.getSubStatesOn(PState.A),Arrays.asList(new PState[] {PState.A2b, PState.A1b })));
 
         stateMachine.fire(PEvent.A2b2A2a, 1);
-        assertThat(stateMachine.getCurrentState(), is(equalTo(PState.A)));
-        assertThat(stateMachine.getSubStatesOn(PState.A), contains(PState.A1b, PState.A2a));
+        assertEquals(stateMachine.getCurrentState(),PState.A);
+        assertTrue(contains(stateMachine.getSubStatesOn(PState.A),Arrays.asList(new PState[] {PState.A1b, PState.A2a })));
 
         stateMachine.fire(PEvent.A2B, 1);
-        assertThat(stateMachine.getCurrentState(), is(equalTo(PState.B)));
-        assertThat(stateMachine.getSubStatesOn(PState.A), is(empty()));
-        assertThat(stateMachine.getSubStatesOn(PState.B), is(empty()));
+        assertEquals(stateMachine.getCurrentState(),PState.B);
+        assertEquals(stateMachine.getSubStatesOn(PState.A).size(), 0);
+        assertEquals(stateMachine.getSubStatesOn(PState.B).size(), 0);
 
         stateMachine.fire(PEvent.B2A, 1);
-        assertThat(stateMachine.getCurrentState(), is(equalTo(PState.A)));
-        assertThat(stateMachine.getSubStatesOn(PState.A), contains(PState.A1b, PState.A2a));
+        assertEquals(stateMachine.getCurrentState(),PState.A);
+        assertTrue(contains(stateMachine.getSubStatesOn(PState.A),Arrays.asList(new PState[] {PState.A1b, PState.A2a })));
     }
 
     @Test
@@ -355,14 +360,23 @@ public class ParallelStateMachineTest {
         stateMachine = builder.newAnyStateMachine(PState.A);
         
         stateMachine.start();
-        assertThat(stateMachine.consumeLog(), is(equalTo("enterTotal.enterA.enterA1.enterA1a.enterA2.enterA2b")));
-        assertThat(stateMachine.getCurrentState(), is(equalTo(PState.A)));
-        assertThat(stateMachine.getSubStatesOn(PState.A), contains(PState.A1a, PState.A2b));
+        assertEquals(stateMachine.consumeLog(),"enterTotal.enterA.enterA1.enterA1a.enterA2.enterA2b");
+        assertEquals(stateMachine.getCurrentState(),PState.A);
+        assertTrue(contains(stateMachine.getSubStatesOn(PState.A),Arrays.asList(new PState[] {PState.A1a, PState.A2b })));
         
         stateMachine.fire(PEvent.A1a2A1b, 1);
-        assertThat(stateMachine.consumeLog(), is(equalTo("exitA1a.transitA1a2A1b.enterA1b")));
-        assertThat(stateMachine.getCurrentState(), is(equalTo(PState.A)));
-        assertThat(stateMachine.getSubStatesOn(PState.A), contains(PState.A2b, PState.A1b));
+        assertEquals(stateMachine.consumeLog(),"exitA1a.transitA1a2A1b.enterA1b");
+        assertEquals(stateMachine.getCurrentState(),PState.A);
+        assertTrue(contains(stateMachine.getSubStatesOn(PState.A),Arrays.asList(new PState[] {PState.A2b, PState.A1b })));
     }
 
+    public static boolean contains(List<?> list,List<?> segment) {
+    	int matchesCount=0;
+    	for(int i=0;i<list.size() && matchesCount<segment.size();i++) {
+    		if(list.get(i).equals(segment.get(matchesCount))) 
+    			matchesCount++;
+    	}
+    	
+    	return matchesCount == segment.size();
+    }
 }

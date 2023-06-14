@@ -1,9 +1,7 @@
 package org.squirrelframework.foundation.fsm;
 
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
@@ -176,11 +174,11 @@ public class ExtensionMethodCallTest {
         fsm.start();
         fsm.consumeLog();
         fsm.fire("ToB", 91);
-        assertThat(fsm.consumeLog(), is(equalTo(
+        assertEquals(fsm.consumeLog(),
                 "beforeExitAny.leftA.exitA.afterExitAny." +
                 "fromAToB.transitFromAnyToBOnToBEx.transitFromAToBOnToBWhenExcellect.transitFromAToBOnToB." +
                 "transitFromAnyToBOnToB.transitFromAToAnyOnToB.transitFromAToB.onToB." +
-                "beforeEntryAny.enterB.entryB.afterEntryAny")));
+                "beforeEntryAny.enterB.entryB.afterEntryAny");
         fsm.terminate();
         assertTrue(fsm.getListenerSize()==2); // start event listener to attach logger and terminate event listener to detach logger
     }
@@ -195,16 +193,16 @@ public class ExtensionMethodCallTest {
         fsm.start();
         fsm.consumeLog();
         fsm.fire("ToC");
-        assertThat(fsm.consumeLog(), is(equalTo(
-                "beforeExitAny.leftA.exitA.afterExitAny.fromAToC.fromAnyToC.beforeEntryAny.afterEntryAny")));
+        assertEquals(fsm.consumeLog(),
+                "beforeExitAny.leftA.exitA.afterExitAny.fromAToC.fromAnyToC.beforeEntryAny.afterEntryAny");
         fsm.terminate();
         
         fsm.start(); // start again
         fsm.fire("ToB", 91);
         fsm.consumeLog();
         fsm.fire("ToC");
-        assertThat(fsm.consumeLog(), is(equalTo(
-                "beforeExitAny.afterExitAny.fromBToCOnToC.fromAnyToC.beforeEntryAny.afterEntryAny")));
+        assertEquals(fsm.consumeLog(),
+                "beforeExitAny.afterExitAny.fromBToCOnToC.fromAnyToC.beforeEntryAny.afterEntryAny");
         fsm.terminate();
     }
     
@@ -217,15 +215,15 @@ public class ExtensionMethodCallTest {
         fsm.start(); 
         fsm.consumeLog();
         fsm.fire("ToC");
-        assertThat(fsm.consumeLog(), is(equalTo(
-                "beforeExitAny.afterExitAny.fromBToCOnToC.fromBToAny.beforeEntryAny.afterEntryAny")));
+        assertEquals(fsm.consumeLog(),
+                "beforeExitAny.afterExitAny.fromBToCOnToC.fromBToAny.beforeEntryAny.afterEntryAny");
         fsm.terminate();
         
         fsm.start(); 
         fsm.consumeLog();
         fsm.fire("ToD");
-        assertThat(fsm.consumeLog(), is(equalTo(
-                "beforeExitAny.afterExitAny.fromBToD.beforeEntryAny.afterEntryAny")));
+        assertEquals(fsm.consumeLog(),
+                "beforeExitAny.afterExitAny.fromBToD.beforeEntryAny.afterEntryAny");
         fsm.terminate();
     }
     
@@ -238,8 +236,8 @@ public class ExtensionMethodCallTest {
         fsm.start(); 
         fsm.consumeLog();
         fsm.fire("ToD");
-        assertThat(fsm.consumeLog(), is(equalTo(
-                "beforeExitAny.afterExitAny.fromBToD.fromBToAny.beforeEntryAny.afterEntryAny")));
+        assertEquals(fsm.consumeLog(),
+                "beforeExitAny.afterExitAny.fromBToD.fromBToAny.beforeEntryAny.afterEntryAny");
         fsm.terminate();
     }
     
@@ -250,8 +248,8 @@ public class ExtensionMethodCallTest {
         fsm.start(); 
         fsm.consumeLog();
         fsm.fire("ToE");
-        assertThat(fsm.consumeLog(), is(equalTo(
-                "beforeExitAny.afterExitAny.fromBToE.fromBToEOnAny..beforeEntryAny.afterEntryAny")));
+        assertEquals(fsm.consumeLog(),
+                "beforeExitAny.afterExitAny.fromBToE.fromBToEOnAny..beforeEntryAny.afterEntryAny");
         fsm.terminate();
     }
     
@@ -262,8 +260,8 @@ public class ExtensionMethodCallTest {
         fsm.start(); 
         fsm.consumeLog();
         fsm.fire("ToE", 91);
-        assertThat(fsm.consumeLog(), is(equalTo(
-                "beforeExitAny.afterExitAny.fromBToE.fromBToEOnAny.fromBToEOnAnyWithCondition.beforeEntryAny.afterEntryAny")));
+        assertEquals(fsm.consumeLog(),
+                "beforeExitAny.afterExitAny.fromBToE.fromBToEOnAny.fromBToEOnAnyWithCondition.beforeEntryAny.afterEntryAny");
         fsm.terminate();
     }
 }

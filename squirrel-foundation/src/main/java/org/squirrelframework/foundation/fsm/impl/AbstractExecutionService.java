@@ -11,8 +11,8 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.squirrelframework.foundation.component.SquirrelConfiguration;
 import org.squirrelframework.foundation.component.impl.AbstractSubject;
 import org.squirrelframework.foundation.exception.ErrorCodes;
@@ -29,7 +29,7 @@ import com.google.common.collect.Maps;
 public abstract class AbstractExecutionService<T extends StateMachine<T, S, E, C>, S, E, C> 
     extends AbstractSubject implements ActionExecutionService<T, S, E, C> {
     
-    private static final Logger logger = LoggerFactory.getLogger(AbstractExecutionService.class);
+    private static final Logger logger = LogManager.getLogger(AbstractExecutionService.class);
 
     protected final LinkedList<Pair<String, List<ActionContext<T, S, E, C>>>> actionBuckets = 
             new LinkedList<Pair<String, List<ActionContext<T, S, E, C>>>>();

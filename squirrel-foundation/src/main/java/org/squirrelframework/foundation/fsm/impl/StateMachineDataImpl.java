@@ -8,8 +8,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.squirrelframework.foundation.fsm.*;
 
 import com.google.common.collect.ArrayListMultimap;
@@ -23,7 +23,7 @@ public class StateMachineDataImpl<T extends StateMachine<T, S, E, C>, S, E, C>
 
     private static final long serialVersionUID = 4102325896046410596L;
 
-    private static final Logger logger = LoggerFactory
+    private static final Logger logger = LogManager
             .getLogger(StateMachineDataImpl.class);
 
     private S currentState;

@@ -9,8 +9,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.squirrelframework.foundation.exception.ErrorCodes;
 import org.squirrelframework.foundation.exception.SquirrelRuntimeException;
 
@@ -21,7 +21,7 @@ public class ReflectUtils {
 
     private ReflectUtils() {}
 
-    private final static Logger logger = LoggerFactory.getLogger(ReflectUtils.class);
+    private final static Logger logger = LogManager.getLogger(ReflectUtils.class);
 
     public static Set<Field> getAllDeclaredFields(final Class<?> theClass) {
         Set<Field> aFields = Sets.newHashSet();

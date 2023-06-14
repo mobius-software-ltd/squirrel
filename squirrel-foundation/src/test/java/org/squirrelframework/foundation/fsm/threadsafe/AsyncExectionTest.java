@@ -1,8 +1,6 @@
 package org.squirrelframework.foundation.fsm.threadsafe;
 
-import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -214,6 +212,6 @@ public class AsyncExectionTest {
         fsm.start();
         fsm.fire("AsyncFirst");
         
-        assertThat(fsm.logger2.toString(), equalTo("AsyncA-null, AsyncA-AsyncB, null-AsyncB"));
+        assertEquals(fsm.logger2.toString(), "AsyncA-null, AsyncA-AsyncB, null-AsyncB");
     }
 }

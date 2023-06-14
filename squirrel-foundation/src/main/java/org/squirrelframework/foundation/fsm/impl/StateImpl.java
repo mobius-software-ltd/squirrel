@@ -3,8 +3,8 @@ package org.squirrelframework.foundation.fsm.impl;
 import com.google.common.collect.LinkedListMultimap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.squirrelframework.foundation.fsm.*;
 
 import java.util.Collections;
@@ -24,7 +24,7 @@ import java.util.Set;
  */
 class StateImpl<T extends StateMachine<T, S, E, C>, S, E, C> implements MutableState<T, S, E, C> {
 
-    private static final Logger logger = LoggerFactory.getLogger(StateImpl.class);
+    private static final Logger logger = LogManager.getLogger(StateImpl.class);
 
     protected final S stateId;
     
