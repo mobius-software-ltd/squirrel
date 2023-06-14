@@ -4,8 +4,6 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Date;
 
-import org.apache.commons.lang3.StringUtils;
-
 public class GeneralConverter<T> implements Converter<T> {
 
     private Class<T> type;
@@ -62,7 +60,7 @@ public class GeneralConverter<T> implements Converter<T> {
                 return type.cast(convertedValue.byteValue());
             }
         } else if(Enum.class.isAssignableFrom(type)) {
-            return type.cast(Enum.valueOf((Class)type, value));
+            return type.cast((T)Enum.valueOf((Class)type, value));
         } else if(String.class.equals(type)) {
             return type.cast(value);
         } else if(Date.class.isAssignableFrom(type)) {
