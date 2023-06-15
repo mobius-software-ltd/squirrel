@@ -9,7 +9,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.mobius-software.fsm</groupId>
     <artifactId>squirrel-foundation</artifactId>
-    <version>0.4.0-3-SNAPSHOT</version>
+    <version>0.4.0-4-SNAPSHOT</version>
     <packaging>bundle</packaging>
     <name>squirrel foundation</name>
     <description>foundation module of squirrel framework which provided event driven infrastructure and a finite state machine implementation.</description>
