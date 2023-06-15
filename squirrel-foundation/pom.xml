@@ -47,8 +47,8 @@
         <connection>scm:git:git://github.com/mobius-software-ltd/squirrel.git</connection>
         <developerConnection>scm:git:git@github.com:mobius-software-ltd/squirrel.git</developerConnection>
         <url>https://github.com/mobius-software-ltd/squirrel</url>
-      <tag>HEAD</tag>
-  </scm>
+      	<tag>HEAD</tag>
+  	</scm>
 
     <licenses>
         <license>
