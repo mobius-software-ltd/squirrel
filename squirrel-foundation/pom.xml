@@ -3,7 +3,7 @@
     <parent>
 		<groupId>com.mobius-software</groupId>
 		<artifactId>mobius-public-parent</artifactId>
-		<version>1.0.9</version>
+		<version>1.0.10</version>
 	</parent>
 
     <modelVersion>4.0.0</modelVersion>
@@ -19,8 +19,6 @@
     <inceptionYear>2013</inceptionYear>
 
     <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <java.version>1.8</java.version>
         <log4j2.version>2.19.0</log4j2.version>
 		<junit.version>4.11</junit.version>
     </properties>
@@ -103,7 +101,49 @@
         </dependency>
     </dependencies>
 
-    <build>
+	<profiles>
+		<profile>
+			<id>java8</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-compiler-plugin</artifactId>
+						<version>${compiler.plugin.version}</version>
+						<configuration>
+							<source>1.8</source>
+							<target>1.8</target>
+							<debug>1.8</debug>
+							<encoding>UTF-8</encoding>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>			
+		</profile>
+		<profile>
+			<id>java11</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-compiler-plugin</artifactId>
+						<version>${compiler.plugin.version}</version>
+						<configuration>
+							<source>11</source>
+							<target>11</target>
+							<debug>11</debug>
+							<encoding>UTF-8</encoding>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>			
+		</profile>
+	</profiles>
+	
+    <build>    	
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -112,29 +152,7 @@
                 <configuration>
                     <downloadSources>true</downloadSources>
                 </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>2.5.1</version>
-                <configuration>
-                    <source>${java.version}</source>
-                    <target>${java.version}</target>
-                    <encoding>UTF-8</encoding>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-source-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>attach-sources</id>
-                        <goals>
-                            <goal>jar-no-fork</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
+            </plugin>            
             <plugin>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>2.7.1</version>
