@@ -1,9 +1,10 @@
 package org.squirrelframework.foundation.component.impl;
 
-import javax.annotation.PostConstruct;
 
 import org.squirrelframework.foundation.component.PersonImpl;
 import org.squirrelframework.foundation.component.Programmer;
+
+import jakarta.annotation.PostConstruct;
 
 public class ProgrammerImpl extends PersonImpl implements Programmer {
     

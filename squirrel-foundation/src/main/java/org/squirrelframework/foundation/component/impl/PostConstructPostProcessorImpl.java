@@ -5,6 +5,7 @@ import java.lang.reflect.Method;
 import org.squirrelframework.foundation.component.SquirrelPostProcessor;
 import org.squirrelframework.foundation.util.ReflectUtils;
 
+import jakarta.annotation.PostConstruct;
 /**
  * For the component instantiated by component provider, the method annotated with PostConstruct will
  * be invoked after component being created.
@@ -25,7 +26,7 @@ public class PostConstructPostProcessorImpl implements SquirrelPostProcessor<Obj
         }, new ReflectUtils.MethodFilter() {
             @Override
             public boolean matches(Method method) {
-                return ReflectUtils.isAnnotatedWith(method, javax.annotation.PostConstruct.class) && 
+                return ReflectUtils.isAnnotatedWith(method, PostConstruct.class) && 
                         (method.getParameterTypes()==null || method.getParameterTypes().length==0);
             }
         });
